@@ -27,10 +27,12 @@
 
 ## 🚀 Getting Started
 
-1. Open Visual studio and clone the repo by pasting the link :
+1. Open Visual studio
+2. Click "Clone repository"
+3. Paste the following link in the repository location field :
    ```bash
    git clone https://github.com/Mckyle-Singh/CommunityHub.git
 
-2. Build the solution (Ctrl+Shift+B or Build > Build Solution).
+4. Build the solution (Ctrl+Shift+B or Build > Build Solution).
 
-3. Run the application (F5 or Debug > Start Debugging).
+5. Run the application (F5 or Debug > Start Debugging).
