@@ -20,6 +20,7 @@ namespace GovernmentApp
                 this.Hide();               // hide current window
                 reportForm.ShowDialog();   // open ReportIssueForm modally
                 this.Show();               // show current window again after report form closes
+                LoadReports();
             }
         }
 

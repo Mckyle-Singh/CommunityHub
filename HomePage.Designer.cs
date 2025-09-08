@@ -39,7 +39,7 @@
             this.panelHeader.BackColor = System.Drawing.Color.FromArgb(30, 30, 30);
 
             this.lblHeader = new System.Windows.Forms.Label();
-            this.lblHeader.Text = "Government App";
+            this.lblHeader.Text = "Community Hub";
             this.lblHeader.ForeColor = System.Drawing.Color.White;
             this.lblHeader.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
             this.lblHeader.AutoSize = true;
