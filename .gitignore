@@ -1,0 +1,13 @@
+﻿# Build Folders
+bin/
+obj/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.cache
+*.db
+
+# Others
+*.log
