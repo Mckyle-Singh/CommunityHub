@@ -84,19 +84,44 @@
             this.flowCards.Controls.Add(cardPending);
             this.flowCards.Controls.Add(cardEvents);
 
-            // DataGridView for Recent Reports
+            // DataGridView for Recent Reports (modern style)
             this.dgvRecentReports = new DataGridView();
             this.dgvRecentReports.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvRecentReports.ReadOnly = true;
             this.dgvRecentReports.AllowUserToAddRows = false;
             this.dgvRecentReports.AllowUserToDeleteRows = false;
             this.dgvRecentReports.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            this.dgvRecentReports.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(45, 45, 48);
-            this.dgvRecentReports.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
             this.dgvRecentReports.EnableHeadersVisualStyles = false;
+            this.dgvRecentReports.BorderStyle = BorderStyle.FixedSingle;
+            this.dgvRecentReports.BackgroundColor = Color.FromArgb(250, 250, 250);
+            this.dgvRecentReports.GridColor = Color.FromArgb(220, 220, 220);
+            this.dgvRecentReports.RowTemplate.Height = 40;
+            this.dgvRecentReports.ColumnHeadersHeight = 40;
+            this.dgvRecentReports.RowHeadersVisible = false;
+
+            // Header style
+            this.dgvRecentReports.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(44, 44, 44);
+            this.dgvRecentReports.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+            this.dgvRecentReports.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            this.dgvRecentReports.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+
+            // Row style
+            this.dgvRecentReports.DefaultCellStyle.BackColor = Color.White;
+            this.dgvRecentReports.DefaultCellStyle.ForeColor = Color.FromArgb(30, 30, 30);
+            this.dgvRecentReports.DefaultCellStyle.SelectionBackColor = Color.FromArgb(0, 191, 166); // teal selection
+            this.dgvRecentReports.DefaultCellStyle.SelectionForeColor = Color.White;
+            this.dgvRecentReports.DefaultCellStyle.Font = new Font("Segoe UI", 10F);
+            this.dgvRecentReports.DefaultCellStyle.Padding = new Padding(5);
+
+            // Alternating row style
+            this.dgvRecentReports.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 245);
+
+            // Columns
             this.dgvRecentReports.Columns.Add("Location", "Location");
             this.dgvRecentReports.Columns.Add("Category", "Category");
             this.dgvRecentReports.Columns.Add("Description", "Description");
+
+
 
             // ---------------- Container panel for spacing ----------------
             Panel dgvContainer = new Panel();
@@ -108,6 +133,7 @@
             // Add controls to main content
             this.panelMainContent.Controls.Add(dgvContainer);
             this.panelMainContent.Controls.Add(flowCards); // keep cards on top
+
 
             // ---------------- Add panels to form ----------------
             this.Controls.Add(this.panelMainContent);
