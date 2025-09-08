@@ -1,6 +1,6 @@
 ﻿# Community Hub
 
-**InvolveSA** is a modular Windows Forms application built to empower South African municipalities and civic organizations with tools for citizen engagement, service transparency, and public accountability.
+**Community Hub** is a modular Windows Forms application built to empower South African municipalities and civic organizations with tools for citizen engagement, service transparency, and public accountability.
 
 ---
 
@@ -27,7 +27,7 @@
 
 ## 🚀 Getting Started
 
-1. Clone the repo:
+1. Open Visual studio and clone the repo by pasting the link :
    ```bash
    git clone https://github.com/Mckyle-Singh/CommunityHub.git
 
