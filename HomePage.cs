@@ -2,9 +2,11 @@ namespace GovernmentApp
 {
     public partial class HomePage : Form
     {
+        private Label placeholderLabel;
         public HomePage()
         {
             InitializeComponent();
+            LoadReports();
             btnReportIssue.Click += BtnReportIssue_Click;
             btnLocalEvents.Click += (s, e) => ShowComingSoonPopup("Local Events & Announcements");
             btnServiceStatus.Click += (s, e) => ShowComingSoonPopup("Service Request Status");
@@ -12,10 +14,13 @@ namespace GovernmentApp
 
         private void BtnReportIssue_Click(object sender, EventArgs e)
         {
-            
-            ReportIssueForm reportForm = new ReportIssueForm();
-            reportForm.Show();
-            this.Hide();
+
+            using (ReportIssueForm reportForm = new ReportIssueForm())
+            {
+                this.Hide();               // hide current window
+                reportForm.ShowDialog();   // open ReportIssueForm modally
+                this.Show();               // show current window again after report form closes
+            }
         }
 
         private void ShowComingSoonPopup(string featureName)
@@ -39,6 +44,51 @@ namespace GovernmentApp
             popup.Controls.Add(lbl);
 
             popup.ShowDialog();
+        }
+
+        private void LoadReports()
+        {
+            dgvRecentReports.Rows.Clear();
+
+            // Prevent headers from turning blue when selected
+            dgvRecentReports.EnableHeadersVisualStyles = false;
+            dgvRecentReports.ColumnHeadersDefaultCellStyle.SelectionBackColor =
+                dgvRecentReports.ColumnHeadersDefaultCellStyle.BackColor;
+            dgvRecentReports.ColumnHeadersDefaultCellStyle.SelectionForeColor =
+                dgvRecentReports.ColumnHeadersDefaultCellStyle.ForeColor;
+
+            // Remove old placeholder if any
+            if (placeholderLabel != null && dgvRecentReports.Controls.Contains(placeholderLabel))
+                dgvRecentReports.Controls.Remove(placeholderLabel);
+
+            if (ReportIssueForm.Reports.Count == 0)
+            {
+                placeholderLabel = new Label()
+                {
+                    Text = "No issues logged",
+                    Font = new Font("Segoe UI", 16F, FontStyle.Bold | FontStyle.Italic),
+                    ForeColor = Color.Gray,
+                    TextAlign = ContentAlignment.MiddleCenter,
+                    Dock = DockStyle.Fill
+                };
+
+                dgvRecentReports.Controls.Add(placeholderLabel);
+            }
+            else
+            {
+                foreach (var r in ReportIssueForm.Reports)
+                {
+                    dgvRecentReports.Rows.Add(r.Location, r.Category, r.Description);
+                }
+
+                // Clear selection so no row is highlighted in blue**
+                dgvRecentReports.ClearSelection();
+                dgvRecentReports.CurrentCell = null;
+
+                // Optional: prevent user from selecting rows entirely
+                dgvRecentReports.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                dgvRecentReports.ReadOnly = true;
+            }
         }
 
     }

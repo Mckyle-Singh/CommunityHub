@@ -24,13 +24,16 @@ namespace GovernmentApp
             this.btnAttachMedia.Click += new System.EventHandler(this.btnAttachMedia_Click);
             this.btnSubmit.Click += new System.EventHandler(this.btnSubmit_Click);
 
+
+        }
+
+        private void ReportIssueForm_Load(object sender, EventArgs e)
+        {
+            UpdateLayout();
         }
 
         private void btnBackHome_Click(object sender, EventArgs e)
         {
-            this.Hide(); // close current form
-            HomePage home = new HomePage();
-            home.Show();
             this.Close();
         }
 

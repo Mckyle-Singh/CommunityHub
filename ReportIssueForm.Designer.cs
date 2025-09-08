@@ -229,7 +229,7 @@
             this.Resize += ReportIssueForm_Resize;
 
             // Apply layout immediately
-            this.Load += (s, e) => UpdateLayout();
+            this.Load += new System.EventHandler(this.ReportIssueForm_Load);
 
             this.ResumeLayout(false);
             this.PerformLayout();
