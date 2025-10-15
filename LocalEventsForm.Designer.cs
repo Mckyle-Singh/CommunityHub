@@ -4,6 +4,8 @@
     {
         private System.ComponentModel.IContainer components = null;
 
+
+
         private Label lblHeader;
         private FlowLayoutPanel flowEvents;
         private Button btnBackHome;
@@ -14,6 +16,15 @@
         private TextBox txtKeyword;
         private Button btnSearch;
         private Button btnClearSearch;
+
+        private Panel panelInsights;
+        private Label lblInsightsTitle;
+        private FlowLayoutPanel flowTags;
+        private Label lblDateSummary;
+        private DataGridView dgvSummary;
+        private Label lblMetaSummary;
+        private Label lblMetaCategories;
+        private Label lblMetaDates;
 
         protected override void Dispose(bool disposing)
         {
@@ -136,11 +147,97 @@
             flowEvents.BackColor = Color.FromArgb(245, 245, 245);
             flowEvents.WrapContents = true;
 
+            // ---------------- Insights Panel ----------------
+            panelInsights = new Panel();
+            panelInsights.Dock = DockStyle.Right;
+            panelInsights.Width = 260;
+            panelInsights.BackColor = Color.WhiteSmoke;
+            panelInsights.Padding = new Padding(10);
+
+            // A vertical flow panel for content
+            FlowLayoutPanel flowInsightsContent = new FlowLayoutPanel();
+            flowInsightsContent.Dock = DockStyle.Fill;
+            flowInsightsContent.FlowDirection = FlowDirection.TopDown;
+            flowInsightsContent.WrapContents = false;
+            flowInsightsContent.AutoScroll = true;
+            flowInsightsContent.Padding = new Padding(0);
+            flowInsightsContent.AutoSize = false;
+
+            // Title
+            lblInsightsTitle = new Label();
+            lblInsightsTitle.Text = "Insights Panel";
+            lblInsightsTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            lblInsightsTitle.AutoSize = true;
+
+            // Tag buttons container
+            flowTags = new FlowLayoutPanel
+            {
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,            // ✅ Keep horizontal layout
+                AutoScroll = true,               // ✅ Enables scroll if overflow
+                Height = 40,                     // ✅ Fixed height for compact layout
+                Dock = DockStyle.Top,            // ✅ Anchors it properly
+                Margin = new Padding(0, 5, 0, 10),
+                Padding = new Padding(0),
+                BackColor = Color.Transparent
+            };
+
+
+            // Date Summary Label
+            lblDateSummary = new Label();
+            lblDateSummary.Text = "Date Summary";
+            lblDateSummary.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblDateSummary.AutoSize = true;
+            lblDateSummary.Margin = new Padding(0, 10, 0, 5);
+
+            // DataGridView for summary
+            dgvSummary = new DataGridView();
+            dgvSummary.ReadOnly = true;
+            dgvSummary.AllowUserToAddRows = false;
+            dgvSummary.AllowUserToDeleteRows = false;
+            dgvSummary.RowHeadersVisible = false;
+            dgvSummary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvSummary.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvSummary.BackgroundColor = Color.White;
+            dgvSummary.Height = 100; // fixed height prevents overlap
+            dgvSummary.Margin = new Padding(0, 0, 0, 10);
+            dgvSummary.Columns.Add("Date", "Date");
+            dgvSummary.Columns.Add("EventCount", "Event Count");
+           
+
+            // Metadata Summary
+            lblMetaSummary = new Label();
+            lblMetaSummary.Text = "Metadata Summary";
+            lblMetaSummary.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            lblMetaSummary.AutoSize = true;
+            lblMetaSummary.Margin = new Padding(0, 10, 0, 5);
+
+            lblMetaCategories = new Label();
+            lblMetaCategories.Font = new Font("Segoe UI", 9F);
+            lblMetaCategories.AutoSize = true;
+
+            lblMetaDates = new Label();
+            lblMetaDates.Font = new Font("Segoe UI", 9F);
+            lblMetaDates.AutoSize = true;
+
+            // Add to the flow panel
+            flowInsightsContent.Controls.Add(lblInsightsTitle);
+            flowInsightsContent.Controls.Add(flowTags);
+            flowInsightsContent.Controls.Add(lblDateSummary);
+            flowInsightsContent.Controls.Add(dgvSummary);
+            flowInsightsContent.Controls.Add(lblMetaSummary);
+            flowInsightsContent.Controls.Add(lblMetaCategories);
+            flowInsightsContent.Controls.Add(lblMetaDates);
+
+            // Add to main panel
+            panelInsights.Controls.Add(flowInsightsContent);
+
             // ---------------- Add to Form ----------------
             this.Controls.Add(flowEvents);
+            this.Controls.Add(panelInsights);
             this.Controls.Add(panelSearch);
             this.Controls.Add(panelHeader);
-           
+
         }
 
         #endregion

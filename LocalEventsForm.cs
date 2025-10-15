@@ -20,10 +20,9 @@ namespace CommunityHub
             btnBackHome.Click += BtnBackHome_Click;
             btnSearch.Click += BtnSearch_Click;
             btnClearSearch.Click += BtnClearSearch_Click;
-
             LoadMockEvents();
-            AnalyzeEventMetadata();
-            
+            PopulateInsightsPanel();
+           
         }
 
         private void BtnBackHome_Click(object sender, EventArgs e)
@@ -56,7 +55,6 @@ namespace CommunityHub
             sortedEvents.Sort((a, b) => a.Date.CompareTo(b.Date)); // soonest first
             RenderEvents(sortedEvents);
         }
-
 
         private void BtnClearSearch_Click(object sender, EventArgs e)
         {
@@ -132,10 +130,18 @@ namespace CommunityHub
             }
         }
 
-        private void AnalyzeEventMetadata()
+
+        private void FilterByCategory(string category)
+        {
+            cmbCategory.SelectedItem = category;
+            BtnSearch_Click(null, null); // Trigger search
+        }
+
+        private void PopulateInsightsPanel()
         {
             var events = MockEventService.GetUpcomingEvents();
 
+            // --- Use sets for uniqueness ---
             HashSet<string> uniqueCategories = new HashSet<string>();
             HashSet<DateTime> uniqueDates = new HashSet<DateTime>();
 
@@ -145,13 +151,37 @@ namespace CommunityHub
                 uniqueDates.Add(ev.Date.Date);
             }
 
-            Console.WriteLine("Unique Categories:");
-            foreach (var cat in uniqueCategories)
-                Console.WriteLine($"- {cat}");
+            // --- Update Tag Buttons ---
+            flowTags.Controls.Clear();
+            foreach (var cat in uniqueCategories.OrderBy(c => c))
+            {
+                Button btnTag = new Button
+                {
+                    Text = cat,
+                    Font = new Font("Segoe UI", 9F),
+                    BackColor = Color.Gainsboro,
+                    FlatStyle = FlatStyle.Flat,
+                    FlatAppearance = { BorderSize = 0 },
+                    Margin = new Padding(3, 0, 3, 0),
+                    Padding = new Padding(6, 3, 6, 3),
+                    AutoSize = true
+                };
+                btnTag.Click += (s, e) => FilterByCategory(cat);
+                flowTags.Controls.Add(btnTag);
+            }
 
-            Console.WriteLine("Unique Dates:");
-            foreach (var date in uniqueDates)
-                Console.WriteLine($"- {date.ToShortDateString()}");
+            // --- Update Date Summary Grid ---
+            dgvSummary.Rows.Clear();
+            var grouped = events.GroupBy(e => e.Date.Date)
+                                .OrderBy(g => g.Key);
+            foreach (var group in grouped)
+            {
+                dgvSummary.Rows.Add(group.Key.ToShortDateString(), group.Count());
+            }
+
+            // --- Update Metadata Labels ---
+            lblMetaCategories.Text = $"Categories: {uniqueCategories.Count}";
+            lblMetaDates.Text = $"Unique Dates: {uniqueDates.Count}";
         }
 
     }
