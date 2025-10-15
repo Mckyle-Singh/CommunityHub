@@ -16,12 +16,18 @@ namespace CommunityHub
         {
             InitializeComponent();
             btnBackHome.Click += BtnBackHome_Click;
-
+            btnSearch.Click += BtnSearch_Click;
         }
 
         private void BtnBackHome_Click(object sender, EventArgs e)
         {
             this.Close(); // closes the modal and returns to HomePage
         }
+        private void BtnSearch_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Search clicked — logic coming in Phase 5!");
+        }
+
+
     }
 }
