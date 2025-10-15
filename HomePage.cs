@@ -1,3 +1,5 @@
+using CommunityHub;
+
 namespace GovernmentApp
 {
     public partial class HomePage : Form
@@ -8,7 +10,7 @@ namespace GovernmentApp
             InitializeComponent();
             LoadReports();
             btnReportIssue.Click += BtnReportIssue_Click;
-            btnLocalEvents.Click += (s, e) => ShowComingSoonPopup("Local Events & Announcements");
+            btnLocalEvents.Click += BtnLocalEvents_Click;
             btnServiceStatus.Click += (s, e) => ShowComingSoonPopup("Service Request Status");
         }
 
@@ -91,6 +93,18 @@ namespace GovernmentApp
                 dgvRecentReports.ReadOnly = true;
             }
         }
+
+        private void BtnLocalEvents_Click(object sender, EventArgs e)
+        {
+            using (LocalEventsForm eventsForm = new LocalEventsForm())
+            {
+                this.Hide();               // hide current window
+                eventsForm.ShowDialog();   // open LocalEventsForm modally
+                this.Show();               // show HomePage again after closing
+            }
+        }
+
+
 
     }
 }
