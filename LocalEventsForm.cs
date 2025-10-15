@@ -1,4 +1,5 @@
-﻿using CommunityHub.Services;
+﻿using CommunityHub.Models;
+using CommunityHub.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,8 +19,11 @@ namespace CommunityHub
             InitializeComponent();
             btnBackHome.Click += BtnBackHome_Click;
             btnSearch.Click += BtnSearch_Click;
-            LoadMockEvents();
             btnClearSearch.Click += BtnClearSearch_Click;
+
+            LoadMockEvents();
+            AnalyzeEventMetadata();
+            
         }
 
         private void BtnBackHome_Click(object sender, EventArgs e)
@@ -33,105 +37,26 @@ namespace CommunityHub
             string keyword = txtKeyword.Text.Trim().ToLower();
 
             var allEvents = MockEventService.GetUpcomingEvents();
-            var colors = MockEventService.GetCategoryColors();
+            var filtered = allEvents.Where(ev =>
+                (selectedCategory == "All" || ev.Category == selectedCategory) &&
+                ev.Date.Date == selectedDate &&
+                (string.IsNullOrEmpty(keyword) ||
+                 ev.Title.ToLower().Contains(keyword) ||
+                 ev.Description.ToLower().Contains(keyword))
+            ).ToList();
 
-            flowEvents.Controls.Clear();
+            filtered.Sort((a, b) => a.Date.CompareTo(b.Date)); // soonest first
 
-            foreach (var ev in allEvents)
-            {
-                bool matchesCategory = selectedCategory == "All" || ev.Category == selectedCategory;
-                bool matchesDate = ev.Date.Date == selectedDate;
-                bool matchesKeyword = string.IsNullOrEmpty(keyword) ||
-                                      ev.Title.ToLower().Contains(keyword) ||
-                                      ev.Description.ToLower().Contains(keyword);
-
-                if (matchesCategory && matchesDate && matchesKeyword)
-                {
-                    Panel card = new Panel();
-                    card.Width = 800;
-                    card.Height = 100;
-                    card.BackColor = Color.White;
-                    card.Margin = new Padding(10);
-                    card.Padding = new Padding(10);
-                    card.BorderStyle = BorderStyle.FixedSingle;
-
-                    Label lblTitle = new Label();
-                    lblTitle.Text = ev.Title;
-                    lblTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-                    lblTitle.ForeColor = colors.ContainsKey(ev.Category) ? colors[ev.Category] : Color.Black;
-                    lblTitle.Dock = DockStyle.Top;
-
-                    Label lblDate = new Label();
-                    lblDate.Text = ev.Date.ToString("MMMM dd, yyyy");
-                    lblDate.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
-                    lblDate.Dock = DockStyle.Top;
-
-                    Label lblDesc = new Label();
-                    lblDesc.Text = ev.Description;
-                    lblDesc.Font = new Font("Segoe UI", 10F);
-                    lblDesc.Dock = DockStyle.Fill;
-
-                    card.Controls.Add(lblDesc);
-                    card.Controls.Add(lblDate);
-                    card.Controls.Add(lblTitle);
-
-                    flowEvents.Controls.Add(card);
-                }
-            }
-
-            if (flowEvents.Controls.Count == 0)
-            {
-                Label noResults = new Label();
-                noResults.Text = "No events match your search.";
-                noResults.Font = new Font("Segoe UI", 12F, FontStyle.Bold | FontStyle.Italic);
-                noResults.ForeColor = Color.Gray;
-                noResults.Dock = DockStyle.Top;
-                noResults.TextAlign = ContentAlignment.MiddleCenter;
-                flowEvents.Controls.Add(noResults);
-            }
-
+            RenderEvents(filtered);
         }
 
         private void LoadMockEvents()
         {
-            flowEvents.Controls.Clear();
-
-            var events = MockEventService.GetUpcomingEvents();
-            var colors = MockEventService.GetCategoryColors();
-
-            foreach (var ev in events)
-            {
-                Panel card = new Panel();
-                card.Width = 800;
-                card.Height = 100;
-                card.BackColor = Color.White;
-                card.Margin = new Padding(10);
-                card.Padding = new Padding(10);
-                card.BorderStyle = BorderStyle.FixedSingle;
-
-                Label lblTitle = new Label();
-                lblTitle.Text = ev.Title;
-                lblTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-                lblTitle.ForeColor = colors.ContainsKey(ev.Category) ? colors[ev.Category] : Color.Black;
-                lblTitle.Dock = DockStyle.Top;
-
-                Label lblDate = new Label();
-                lblDate.Text = ev.Date.ToString("MMMM dd, yyyy");
-                lblDate.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
-                lblDate.Dock = DockStyle.Top;
-
-                Label lblDesc = new Label();
-                lblDesc.Text = ev.Description;
-                lblDesc.Font = new Font("Segoe UI", 10F);
-                lblDesc.Dock = DockStyle.Fill;
-
-                card.Controls.Add(lblDesc);
-                card.Controls.Add(lblDate);
-                card.Controls.Add(lblTitle);
-
-                flowEvents.Controls.Add(card);
-            }
+            var sortedEvents = new List<Event>(MockEventService.GetUpcomingEvents());
+            sortedEvents.Sort((a, b) => a.Date.CompareTo(b.Date)); // soonest first
+            RenderEvents(sortedEvents);
         }
+
 
         private void BtnClearSearch_Click(object sender, EventArgs e)
         {
@@ -141,7 +66,93 @@ namespace CommunityHub
             LoadMockEvents(); // reload all events
         }
 
+        private void RenderEvents(List<Event> events)
+        {
+            flowEvents.Controls.Clear();
+            var colors = MockEventService.GetCategoryColors();
 
+            foreach (var ev in events)
+            {
+                Panel card = new Panel
+                {
+                    Width = 800,
+                    Height = 100,
+                    BackColor = Color.White,
+                    Margin = new Padding(10),
+                    Padding = new Padding(10),
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+
+                Label lblTitle = new Label
+                {
+                    Text = ev.Title,
+                    Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                    ForeColor = colors.ContainsKey(ev.Category) ? colors[ev.Category] : Color.Black,
+                    Dock = DockStyle.Top
+                };
+
+                Label lblDate = new Label
+                {
+                    Text = ev.Date.ToString("MMMM dd, yyyy"),
+                    Font = new Font("Segoe UI", 9F, FontStyle.Italic),
+                    Dock = DockStyle.Top
+                };
+
+                Label lblDesc = new Label
+                {
+                    Text = ev.Description,
+                    Font = new Font("Segoe UI", 10F),
+                    Dock = DockStyle.Fill
+                };
+
+                // Highlight urgent events
+                if ((ev.Date - DateTime.Today).TotalDays <= 1)
+                {
+                    card.BackColor = Color.LightYellow;
+                    lblTitle.Text += " ⚠️";
+                }
+
+                card.Controls.Add(lblDesc);
+                card.Controls.Add(lblDate);
+                card.Controls.Add(lblTitle);
+                flowEvents.Controls.Add(card);
+            }
+
+            if (flowEvents.Controls.Count == 0)
+            {
+                Label noResults = new Label
+                {
+                    Text = "No events match your search.",
+                    Font = new Font("Segoe UI", 12F, FontStyle.Bold | FontStyle.Italic),
+                    ForeColor = Color.Gray,
+                    Dock = DockStyle.Top,
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+                flowEvents.Controls.Add(noResults);
+            }
+        }
+
+        private void AnalyzeEventMetadata()
+        {
+            var events = MockEventService.GetUpcomingEvents();
+
+            HashSet<string> uniqueCategories = new HashSet<string>();
+            HashSet<DateTime> uniqueDates = new HashSet<DateTime>();
+
+            foreach (var ev in events)
+            {
+                uniqueCategories.Add(ev.Category);
+                uniqueDates.Add(ev.Date.Date);
+            }
+
+            Console.WriteLine("Unique Categories:");
+            foreach (var cat in uniqueCategories)
+                Console.WriteLine($"- {cat}");
+
+            Console.WriteLine("Unique Dates:");
+            foreach (var date in uniqueDates)
+                Console.WriteLine($"- {date.ToShortDateString()}");
+        }
 
     }
 }
