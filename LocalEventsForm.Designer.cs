@@ -13,6 +13,7 @@
         private DateTimePicker dtpDate;
         private TextBox txtKeyword;
         private Button btnSearch;
+        private Button btnClearSearch;
 
         protected override void Dispose(bool disposing)
         {
@@ -98,12 +99,22 @@
             btnSearch.FlatAppearance.BorderSize = 0;
             btnSearch.Width = 100;
 
+            //clear search button
+            btnClearSearch = new Button();
+            btnClearSearch.Text = "Clear";
+            btnClearSearch.Font = new Font("Segoe UI", 10F);
+            btnClearSearch.BackColor = Color.FromArgb(60, 60, 60); // slightly lighter than Search
+            btnClearSearch.ForeColor = Color.White;
+            btnClearSearch.FlatStyle = FlatStyle.Flat;
+            btnClearSearch.FlatAppearance.BorderSize = 0;
+            btnClearSearch.Width = 100;
+
             // Positioning
             cmbCategory.Location = new Point(0, 10);
             dtpDate.Location = new Point(160, 10);
             txtKeyword.Location = new Point(320, 10);
             btnSearch.Location = new Point(530, 10);
-
+            btnClearSearch.Location = new Point(640, 10);
 
             // Add to header panel
             panelHeader.Controls.Add(lblHeader);
@@ -114,6 +125,8 @@
             panelSearch.Controls.Add(dtpDate);
             panelSearch.Controls.Add(txtKeyword);
             panelSearch.Controls.Add(btnSearch);
+            panelSearch.Controls.Add(btnClearSearch);
+
 
             // ---------------- FlowLayoutPanel for Events ----------------
             flowEvents = new FlowLayoutPanel();
