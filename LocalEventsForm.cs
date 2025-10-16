@@ -59,11 +59,12 @@ namespace CommunityHub
             var allEvents = MockEventService.GetUpcomingEvents();
             var filtered = allEvents.Where(ev =>
                 (selectedCategory == "All" || ev.Category == selectedCategory) &&
-                ev.Date.Date == selectedDate &&
+                (!dtpDate.Checked || ev.Date.Date == selectedDate) &&
                 (string.IsNullOrEmpty(keyword) ||
                  ev.Title.ToLower().Contains(keyword) ||
                  ev.Description.ToLower().Contains(keyword))
             ).ToList();
+
 
             filtered.Sort((a, b) => a.Date.CompareTo(b.Date)); // soonest first
 
@@ -81,6 +82,9 @@ namespace CommunityHub
                 sb.AppendLine($"{kvp.Key}: {kvp.Value}");
 
             MessageBox.Show(sb.ToString(), "Search Tracking Summary", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            var recommended = GetRecommendedEvents();
+            RenderRecommendations(recommended);
 
         }
 
@@ -178,6 +182,108 @@ namespace CommunityHub
             }
         }
 
+        private List<Event> GetRecommendedEvents()
+        {
+            var allEvents = MockEventService.GetUpcomingEvents();
+
+            string keyword = txtKeyword.Text.Trim().ToLower();
+            DateTime selectedDate = dtpDate.Value.Date;
+            bool useDateFilter = dtpDate.Checked;
+
+            List<string> topCategories;
+
+            if (searchFrequency.Count == 0)
+            {
+                // Fallback: use all categories if no search history yet
+                topCategories = allEvents.Select(ev => ev.Category).Distinct().ToList();
+            }
+            else
+            {
+                topCategories = searchFrequency
+                    .OrderByDescending(kvp => kvp.Value)
+                    .Take(2)
+                    .Select(kvp => kvp.Key)
+                    .ToList();
+            }
+
+            // Debug output to verify logic
+            MessageBox.Show($"Top categories: {string.Join(", ", topCategories)}\nKeyword: {keyword}\nDate Filter: {(useDateFilter ? selectedDate.ToShortDateString() : "None")}");
+
+            var recommended = allEvents
+                .Where(ev =>
+                    topCategories.Contains(ev.Category) &&
+                    (!useDateFilter || ev.Date.Date == selectedDate) &&
+                    (string.IsNullOrEmpty(keyword) ||
+                     ev.Title?.ToLower().Contains(keyword) == true ||
+                     ev.Description?.ToLower().Contains(keyword) == true)
+                )
+                .OrderBy(ev => ev.Date)
+                .ToList();
+
+            return recommended;
+
+
+
+        }
+
+        private void RenderRecommendations(List<Event> events)
+        {
+            flowRecommendations.Controls.Clear();
+            var colors = MockEventService.GetCategoryColors();
+
+            foreach (var ev in events)
+            {
+                Panel card = new Panel
+                {
+                    Width = 250,
+                    Height = 100,
+                    BackColor = Color.White,
+                    Margin = new Padding(8),
+                    Padding = new Padding(8),
+                    BorderStyle = BorderStyle.FixedSingle
+                };
+
+                Label lblTitle = new Label
+                {
+                    Text = ev.Title,
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    ForeColor = colors.ContainsKey(ev.Category) ? colors[ev.Category] : Color.Black,
+                    Dock = DockStyle.Top
+                };
+
+                Label lblDate = new Label
+                {
+                    Text = ev.Date.ToString("MMM dd"),
+                    Font = new Font("Segoe UI", 9F, FontStyle.Italic),
+                    Dock = DockStyle.Top
+                };
+
+                Label lblCategory = new Label
+                {
+                    Text = $"Category: {ev.Category}",
+                    Font = new Font("Segoe UI", 9F),
+                    Dock = DockStyle.Bottom
+                };
+
+                card.Controls.Add(lblCategory);
+                card.Controls.Add(lblDate);
+                card.Controls.Add(lblTitle);
+                flowRecommendations.Controls.Add(card);
+            }
+
+            if (flowRecommendations.Controls.Count == 0)
+            {
+                Label noRecs = new Label
+                {
+                    Text = "No recommendations yet.",
+                    Font = new Font("Segoe UI", 10F, FontStyle.Italic),
+                    ForeColor = Color.Gray,
+                    AutoSize = true,
+                    Margin = new Padding(10)
+                };
+                flowRecommendations.Controls.Add(noRecs);
+            }
+        }
 
         private void FilterByCategory(string category)
         {

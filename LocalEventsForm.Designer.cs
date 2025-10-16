@@ -98,6 +98,8 @@
             dtpDate.Font = new Font("Segoe UI", 10F);
             dtpDate.Width = 150;
             dtpDate.Format = DateTimePickerFormat.Short;
+            dtpDate.ShowCheckBox = true;
+            dtpDate.Checked = false; // default to unchecked
 
             // Keyword TextBox
             txtKeyword = new TextBox();
