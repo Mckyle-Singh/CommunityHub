@@ -26,6 +26,11 @@
         private Label lblMetaCategories;
         private Label lblMetaDates;
 
+        private Label lblRecommendations;
+        private Panel panelRecommendations;
+        private FlowLayoutPanel flowRecommendations;
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -147,6 +152,31 @@
             flowEvents.BackColor = Color.FromArgb(245, 245, 245);
             flowEvents.WrapContents = true;
 
+            // ---------------- Recommendations Section ----------------
+            panelRecommendations = new Panel();
+            panelRecommendations.Dock = DockStyle.Bottom;
+            panelRecommendations.Height = 150;
+            panelRecommendations.BackColor = Color.WhiteSmoke;
+            panelRecommendations.Padding = new Padding(15);
+
+            lblRecommendations = new Label();
+            lblRecommendations.Text = "Recommended for You";
+            lblRecommendations.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            lblRecommendations.AutoSize = true;
+            lblRecommendations.Dock = DockStyle.Top;
+            lblRecommendations.Margin = new Padding(0, 0, 0, 10);
+
+            flowRecommendations = new FlowLayoutPanel();
+            flowRecommendations.Dock = DockStyle.Fill;
+            flowRecommendations.AutoScroll = true;
+            flowRecommendations.WrapContents = true;
+            flowRecommendations.Padding = new Padding(5);
+            flowRecommendations.BackColor = Color.White;
+
+            // Add inside panel
+            panelRecommendations.Controls.Add(flowRecommendations);
+            panelRecommendations.Controls.Add(lblRecommendations);
+
             // ---------------- Insights Panel ----------------
             panelInsights = new Panel();
             panelInsights.Dock = DockStyle.Right;
@@ -234,6 +264,7 @@
 
             // ---------------- Add to Form ----------------
             this.Controls.Add(flowEvents);
+            this.Controls.Add(this.panelRecommendations);
             this.Controls.Add(panelInsights);
             this.Controls.Add(panelSearch);
             this.Controls.Add(panelHeader);

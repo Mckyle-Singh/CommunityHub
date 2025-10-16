@@ -51,9 +51,22 @@ namespace CommunityHub
 
         private void LoadMockEvents()
         {
-            var sortedEvents = new List<Event>(MockEventService.GetUpcomingEvents());
-            sortedEvents.Sort((a, b) => a.Date.CompareTo(b.Date)); // soonest first
-            RenderEvents(sortedEvents);
+            // Retrieve upcoming events from the mock service
+            Queue<Event> eventQueue = MockEventService.GetUpcomingEvents();
+
+            // Dequeue events into a list to allow sorting
+            List<Event> events = new List<Event>();
+            while (eventQueue.Count > 0)
+            {
+                events.Add(eventQueue.Dequeue());
+            }
+
+            // Sort events by date (soonest first)
+            events.Sort((a, b) => a.Date.CompareTo(b.Date));
+
+            // Render the sorted list to the UI
+            RenderEvents(events);
+ 
         }
 
         private void BtnClearSearch_Click(object sender, EventArgs e)
