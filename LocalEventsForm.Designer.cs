@@ -4,12 +4,12 @@
     {
         private System.ComponentModel.IContainer components = null;
 
-
-
+        // ──────────────── Header ────────────────
         private Label lblHeader;
-        private FlowLayoutPanel flowEvents;
-        private Button btnBackHome;
         private Panel panelHeader;
+        private Button btnBackHome;
+
+        // ──────────────── Search Controls ────────────────
         private Panel panelSearch;
         private ComboBox cmbCategory;
         private DateTimePicker dtpDate;
@@ -17,6 +17,10 @@
         private Button btnSearch;
         private Button btnClearSearch;
 
+        // ──────────────── Event Display ────────────────
+        private FlowLayoutPanel flowEvents;
+
+        // ──────────────── Insights Panel ────────────────
         private Panel panelInsights;
         private Label lblInsightsTitle;
         private FlowLayoutPanel flowTags;
@@ -26,11 +30,10 @@
         private Label lblMetaCategories;
         private Label lblMetaDates;
 
+        // ──────────────── Recommendations ────────────────
         private Label lblRecommendations;
         private Panel panelRecommendations;
         private FlowLayoutPanel flowRecommendations;
-
-
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -47,85 +50,99 @@
             this.BackColor = Color.White;
             this.StartPosition = FormStartPosition.CenterScreen;
 
-            // ---------------- Header Panel ----------------
-            panelHeader = new Panel();
-            panelHeader.Dock = DockStyle.Top;
-            panelHeader.Height = 70;
-            panelHeader.BackColor = Color.FromArgb(30, 30, 30);
+            // ──────────────── Header Panel ────────────────
+            panelHeader = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 70,
+                BackColor = Color.FromArgb(30, 30, 30)
+            };
 
-            // Header Label
-            lblHeader = new Label();
-            lblHeader.Text = "Local Events & Announcements";
-            lblHeader.Font = new Font("Segoe UI", 18F, FontStyle.Bold);
-            lblHeader.ForeColor = Color.White;
-            lblHeader.Dock = DockStyle.Left;
-            lblHeader.AutoSize = false;
-            lblHeader.TextAlign = ContentAlignment.MiddleLeft;
-            lblHeader.Width = 600;
-            lblHeader.Padding = new Padding(20, 0, 0, 0);
+            lblHeader = new Label
+            {
+                Text = "Local Events & Announcements",
+                Font = new Font("Segoe UI", 18F, FontStyle.Bold),
+                ForeColor = Color.White,
+                Dock = DockStyle.Left,
+                AutoSize = false,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Width = 600,
+                Padding = new Padding(20, 0, 0, 0)
+            };
 
-            // Back Button
-            btnBackHome = new Button();
-            btnBackHome.Text = "← Back Home";
-            btnBackHome.Font = new Font("Segoe UI", 10F);
-            btnBackHome.Size = new Size(120, 30);
-            btnBackHome.BackColor = Color.FromArgb(45, 45, 48);
-            btnBackHome.ForeColor = Color.White;
-            btnBackHome.FlatStyle = FlatStyle.Flat;
+            btnBackHome = new Button
+            {
+                Text = "← Back Home",
+                Font = new Font("Segoe UI", 10F),
+                Size = new Size(120, 30),
+                BackColor = Color.FromArgb(45, 45, 48),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Location = new Point(panelHeader.Width - 140, 20),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Margin = new Padding(0, 20, 20, 0)
+            };
             btnBackHome.FlatAppearance.BorderSize = 0;
-            btnBackHome.Size = new Size(120, 30);
-            btnBackHome.Location = new Point(panelHeader.Width - 140, 20); // adjust X and Y
-            btnBackHome.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnBackHome.Margin = new Padding(0, 20, 20, 0);
 
-            // Search Panel
-            panelSearch = new Panel();
-            panelSearch.Dock = DockStyle.Top;
-            panelSearch.Height = 50;
-            panelSearch.Padding = new Padding(20, 10, 20, 10);
-            panelSearch.BackColor = Color.FromArgb(45, 45, 48);
+            panelHeader.Controls.Add(lblHeader);
+            panelHeader.Controls.Add(btnBackHome);
 
-            // Category ComboBox
-            cmbCategory = new ComboBox();
-            cmbCategory.Font = new Font("Segoe UI", 10F);
-            cmbCategory.Width = 150;
-            cmbCategory.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            // ──────────────── Search Panel ────────────────
+            panelSearch = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 50,
+                Padding = new Padding(20, 10, 20, 10),
+                BackColor = Color.FromArgb(45, 45, 48)
+            };
+
+            cmbCategory = new ComboBox
+            {
+                Font = new Font("Segoe UI", 10F),
+                Width = 150,
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
             cmbCategory.Items.AddRange(new string[] { "All", "Public Notice", "Volunteer", "Government" });
             cmbCategory.SelectedIndex = 0;
 
-            // Date Picker
-            dtpDate = new DateTimePicker();
-            dtpDate.Font = new Font("Segoe UI", 10F);
-            dtpDate.Width = 150;
-            dtpDate.Format = DateTimePickerFormat.Short;
-            dtpDate.ShowCheckBox = true;
-            dtpDate.Checked = false; // default to unchecked
+            dtpDate = new DateTimePicker
+            {
+                Font = new Font("Segoe UI", 10F),
+                Width = 150,
+                Format = DateTimePickerFormat.Short,
+                ShowCheckBox = true,
+                Checked = false
+            };
 
-            // Keyword TextBox
-            txtKeyword = new TextBox();
-            txtKeyword.Font = new Font("Segoe UI", 10F);
-            txtKeyword.Width = 200;
-            txtKeyword.PlaceholderText = "Search...";
+            txtKeyword = new TextBox
+            {
+                Font = new Font("Segoe UI", 10F),
+                Width = 200,
+                PlaceholderText = "Search..."
+            };
 
-            // Search Button
-            btnSearch = new Button();
-            btnSearch.Text = "Search";
-            btnSearch.Font = new Font("Segoe UI", 10F);
-            btnSearch.BackColor = Color.FromArgb(60, 60, 60);
-            btnSearch.ForeColor = Color.White;
-            btnSearch.FlatStyle = FlatStyle.Flat;
+            btnSearch = new Button
+            {
+                Text = "Search",
+                Font = new Font("Segoe UI", 10F),
+                BackColor = Color.FromArgb(60, 60, 60),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Width = 100
+            };
             btnSearch.FlatAppearance.BorderSize = 0;
-            btnSearch.Width = 100;
 
-            //clear search button
-            btnClearSearch = new Button();
-            btnClearSearch.Text = "Clear";
-            btnClearSearch.Font = new Font("Segoe UI", 10F);
-            btnClearSearch.BackColor = Color.FromArgb(60, 60, 60); // slightly lighter than Search
-            btnClearSearch.ForeColor = Color.White;
-            btnClearSearch.FlatStyle = FlatStyle.Flat;
+            btnClearSearch = new Button
+            {
+                Text = "Clear",
+                Font = new Font("Segoe UI", 10F),
+                BackColor = Color.FromArgb(60, 60, 60),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Width = 100
+            };
             btnClearSearch.FlatAppearance.BorderSize = 0;
-            btnClearSearch.Width = 100;
 
             // Positioning
             cmbCategory.Location = new Point(0, 10);
@@ -134,11 +151,6 @@
             btnSearch.Location = new Point(530, 10);
             btnClearSearch.Location = new Point(640, 10);
 
-            // Add to header panel
-            panelHeader.Controls.Add(lblHeader);
-            panelHeader.Controls.Add(btnBackHome);
-
-            // Add to search panel
             panelSearch.Controls.Add(cmbCategory);
             panelSearch.Controls.Add(dtpDate);
             panelSearch.Controls.Add(txtKeyword);
@@ -146,113 +158,129 @@
             panelSearch.Controls.Add(btnClearSearch);
 
 
-            // ---------------- FlowLayoutPanel for Events ----------------
-            flowEvents = new FlowLayoutPanel();
-            flowEvents.Dock = DockStyle.Fill;
-            flowEvents.Padding = new Padding(20);
-            flowEvents.AutoScroll = true;
-            flowEvents.BackColor = Color.FromArgb(245, 245, 245);
-            flowEvents.WrapContents = true;
+            // ──────────────── Event Display ────────────────
+            flowEvents = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(20),
+                AutoScroll = true,
+                BackColor = Color.FromArgb(245, 245, 245),
+                WrapContents = true
+            };
 
-            // ---------------- Recommendations Section ----------------
-            panelRecommendations = new Panel();
-            panelRecommendations.Dock = DockStyle.Bottom;
-            panelRecommendations.Height = 150;
-            panelRecommendations.BackColor = Color.WhiteSmoke;
-            panelRecommendations.Padding = new Padding(15);
 
-            lblRecommendations = new Label();
-            lblRecommendations.Text = "Recommended for You";
-            lblRecommendations.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-            lblRecommendations.AutoSize = true;
-            lblRecommendations.Dock = DockStyle.Top;
-            lblRecommendations.Margin = new Padding(0, 0, 0, 10);
+            // ──────────────── Recommendations Section ────────────────
+            panelRecommendations = new Panel
+            {
+                Dock = DockStyle.Bottom,
+                Height = 150,
+                BackColor = Color.WhiteSmoke,
+                Padding = new Padding(15)
+            };
 
-            flowRecommendations = new FlowLayoutPanel();
-            flowRecommendations.Dock = DockStyle.Fill;
-            flowRecommendations.AutoScroll = true;
-            flowRecommendations.WrapContents = true;
-            flowRecommendations.Padding = new Padding(5);
-            flowRecommendations.BackColor = Color.White;
+            lblRecommendations = new Label
+            {
+                Text = "Recommended for You",
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                AutoSize = true,
+                Dock = DockStyle.Top,
+                Margin = new Padding(0, 0, 0, 10)
+            };
 
-            // Add inside panel
+            flowRecommendations = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true,
+                WrapContents = true,
+                Padding = new Padding(5),
+                BackColor = Color.White
+            };
+
             panelRecommendations.Controls.Add(flowRecommendations);
             panelRecommendations.Controls.Add(lblRecommendations);
 
-            // ---------------- Insights Panel ----------------
-            panelInsights = new Panel();
-            panelInsights.Dock = DockStyle.Right;
-            panelInsights.Width = 260;
-            panelInsights.BackColor = Color.WhiteSmoke;
-            panelInsights.Padding = new Padding(10);
 
-            // A vertical flow panel for content
-            FlowLayoutPanel flowInsightsContent = new FlowLayoutPanel();
-            flowInsightsContent.Dock = DockStyle.Fill;
-            flowInsightsContent.FlowDirection = FlowDirection.TopDown;
-            flowInsightsContent.WrapContents = false;
-            flowInsightsContent.AutoScroll = true;
-            flowInsightsContent.Padding = new Padding(0);
-            flowInsightsContent.AutoSize = false;
+            // ──────────────── Insights Panel ────────────────
+            panelInsights = new Panel
+            {
+                Dock = DockStyle.Right,
+                Width = 260,
+                BackColor = Color.WhiteSmoke,
+                Padding = new Padding(10)
+            };
 
-            // Title
-            lblInsightsTitle = new Label();
-            lblInsightsTitle.Text = "Insights Panel";
-            lblInsightsTitle.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            lblInsightsTitle.AutoSize = true;
+            FlowLayoutPanel flowInsightsContent = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false,
+                AutoScroll = true,
+                Padding = new Padding(0),
+                AutoSize = false
+            };
 
-            // Tag buttons container
+            lblInsightsTitle = new Label
+            {
+                Text = "Insights Panel",
+                Font = new Font("Segoe UI", 12F, FontStyle.Bold),
+                AutoSize = true
+            };
+
             flowTags = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = false,            // ✅ Keep horizontal layout
-                AutoScroll = true,               // ✅ Enables scroll if overflow
-                Height = 40,                     // ✅ Fixed height for compact layout
-                Dock = DockStyle.Top,            // ✅ Anchors it properly
+                WrapContents = false,
+                AutoScroll = true,
+                Height = 40,
+                Dock = DockStyle.Top,
                 Margin = new Padding(0, 5, 0, 10),
                 Padding = new Padding(0),
                 BackColor = Color.Transparent
             };
 
+            lblDateSummary = new Label
+            {
+                Text = "Date Summary",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                AutoSize = true,
+                Margin = new Padding(0, 10, 0, 5)
+            };
 
-            // Date Summary Label
-            lblDateSummary = new Label();
-            lblDateSummary.Text = "Date Summary";
-            lblDateSummary.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblDateSummary.AutoSize = true;
-            lblDateSummary.Margin = new Padding(0, 10, 0, 5);
-
-            // DataGridView for summary
-            dgvSummary = new DataGridView();
-            dgvSummary.ReadOnly = true;
-            dgvSummary.AllowUserToAddRows = false;
-            dgvSummary.AllowUserToDeleteRows = false;
-            dgvSummary.RowHeadersVisible = false;
-            dgvSummary.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvSummary.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvSummary.BackgroundColor = Color.White;
-            dgvSummary.Height = 100; // fixed height prevents overlap
-            dgvSummary.Margin = new Padding(0, 0, 0, 10);
+            dgvSummary = new DataGridView
+            {
+                ReadOnly = true,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                RowHeadersVisible = false,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                BackgroundColor = Color.White,
+                Height = 100,
+                Margin = new Padding(0, 0, 0, 10)
+            };
             dgvSummary.Columns.Add("Date", "Date");
             dgvSummary.Columns.Add("EventCount", "Event Count");
-           
 
-            // Metadata Summary
-            lblMetaSummary = new Label();
-            lblMetaSummary.Text = "Metadata Summary";
-            lblMetaSummary.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
-            lblMetaSummary.AutoSize = true;
-            lblMetaSummary.Margin = new Padding(0, 10, 0, 5);
+            lblMetaSummary = new Label
+            {
+                Text = "Metadata Summary",
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                AutoSize = true,
+                Margin = new Padding(0, 10, 0, 5)
+            };
 
-            lblMetaCategories = new Label();
-            lblMetaCategories.Font = new Font("Segoe UI", 9F);
-            lblMetaCategories.AutoSize = true;
+            lblMetaCategories = new Label
+            {
+                Font = new Font("Segoe UI", 9F),
+                AutoSize = true
+            };
 
-            lblMetaDates = new Label();
-            lblMetaDates.Font = new Font("Segoe UI", 9F);
-            lblMetaDates.AutoSize = true;
+            lblMetaDates = new Label
+            {
+                Font = new Font("Segoe UI", 9F),
+                AutoSize = true
+            };
 
-            // Add to the flow panel
             flowInsightsContent.Controls.Add(lblInsightsTitle);
             flowInsightsContent.Controls.Add(flowTags);
             flowInsightsContent.Controls.Add(lblDateSummary);
@@ -261,18 +289,16 @@
             flowInsightsContent.Controls.Add(lblMetaCategories);
             flowInsightsContent.Controls.Add(lblMetaDates);
 
-            // Add to main panel
             panelInsights.Controls.Add(flowInsightsContent);
 
-            // ---------------- Add to Form ----------------
+
+            // ──────────────── Add to Form ────────────────
             this.Controls.Add(flowEvents);
-            this.Controls.Add(this.panelRecommendations);
+            this.Controls.Add(panelRecommendations);
             this.Controls.Add(panelInsights);
             this.Controls.Add(panelSearch);
             this.Controls.Add(panelHeader);
-
         }
-
         #endregion
     }
 }

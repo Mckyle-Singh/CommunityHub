@@ -20,6 +20,25 @@ namespace CommunityHub
         public LocalEventsForm()
         {
             InitializeComponent();
+
+            ToolTip tooltips = new ToolTip
+            {
+                AutoPopDelay = 5000,
+                InitialDelay = 500,
+                ReshowDelay = 200,
+                ShowAlways = true
+            };
+
+            // Assign tooltips to controls
+            tooltips.SetToolTip(cmbCategory, "Filter events by category. Select 'All' to view everything.");
+            tooltips.SetToolTip(dtpDate, "Choose a specific date to narrow results. Uncheck to ignore date.");
+            tooltips.SetToolTip(txtKeyword, "Search by title or description keywords like 'cleanup' or 'water'.");
+            tooltips.SetToolTip(btnSearch, "Run your search using selected filters.");
+            tooltips.SetToolTip(btnClearSearch, "Reset all filters and reload all events.");
+            tooltips.SetToolTip(flowEvents, "Search results will appear here.");
+            tooltips.SetToolTip(flowRecommendations, "Recommended events based on your recent searches.");
+
+
             btnBackHome.Click += BtnBackHome_Click;
             btnSearch.Click += BtnSearch_Click;
             btnClearSearch.Click += BtnClearSearch_Click;
@@ -221,8 +240,6 @@ namespace CommunityHub
                 .ToList();
 
             return recommended;
-
-
 
         }
 
