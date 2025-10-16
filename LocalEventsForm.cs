@@ -14,6 +14,9 @@ namespace CommunityHub
 {
     public partial class LocalEventsForm : Form
     {
+        private Dictionary<string, int> searchFrequency = new Dictionary<string, int>();
+        private Dictionary<string, int> keywordFrequency = new Dictionary<string, int>();
+
         public LocalEventsForm()
         {
             InitializeComponent();
@@ -35,6 +38,24 @@ namespace CommunityHub
             DateTime selectedDate = dtpDate.Value.Date;
             string keyword = txtKeyword.Text.Trim().ToLower();
 
+            // Phase 2: Track category frequency
+            if (!string.IsNullOrEmpty(selectedCategory) && selectedCategory != "All")
+            {
+                if (!searchFrequency.ContainsKey(selectedCategory))
+                    searchFrequency[selectedCategory] = 0;
+
+                searchFrequency[selectedCategory]++;
+            }
+
+            // Phase 2: Track keyword frequency
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                if (!keywordFrequency.ContainsKey(keyword))
+                    keywordFrequency[keyword] = 0;
+
+                keywordFrequency[keyword]++;
+            }
+
             var allEvents = MockEventService.GetUpcomingEvents();
             var filtered = allEvents.Where(ev =>
                 (selectedCategory == "All" || ev.Category == selectedCategory) &&
@@ -47,6 +68,20 @@ namespace CommunityHub
             filtered.Sort((a, b) => a.Date.CompareTo(b.Date)); // soonest first
 
             RenderEvents(filtered);
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("Search Frequency:");
+            foreach (var kvp in searchFrequency)
+                sb.AppendLine($"{kvp.Key}: {kvp.Value}");
+
+            sb.AppendLine();
+            sb.AppendLine("Keyword Frequency:");
+            foreach (var kvp in keywordFrequency)
+                sb.AppendLine($"{kvp.Key}: {kvp.Value}");
+
+            MessageBox.Show(sb.ToString(), "Search Tracking Summary", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
         }
 
         private void LoadMockEvents()
