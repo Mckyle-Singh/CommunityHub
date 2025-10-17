@@ -10,7 +10,14 @@
   Citizens can submit location-based reports with descriptions and photos—ideal for potholes, water leaks, or broken infrastructure.
 
 - **Local Events & Announcements**  
-  A scrollable feed of community events, safety notices, and municipal updates with RSVP and subscription options.
+  A scrollable feed of community events, safety notices, and municipal updates.  
+  Includes:
+  - **Event Queueing**: Events are stored and managed using a queue for chronological display.
+  - **Category Tagging**: Events are color-coded by category (e.g., Volunteer, Public Notice, Government) for quick visual filtering.
+  - **Search Tracking**: User search patterns are tracked using dictionaries to identify frequently searched categories and keywords.
+  - **Smart Recommendations**: Suggests relevant events based on user behavior using frequency-based filtering and keyword relevance.
+  - **Insights Panel**: Displays unique categories and dates using sets, with tag buttons and a date summary grid for quick navigation.
+
 
 - **Service Request Status**  
   Track the progress of submitted service requests with visual timelines, department assignments, and feedback loops.
