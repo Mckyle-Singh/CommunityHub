@@ -1,6 +1,7 @@
 ﻿using CommunityHub.Models;
 using CommunityHub.Services;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,6 +15,7 @@ namespace CommunityHub
 {
     public partial class LocalEventsForm : Form
     {
+        // Used in BtnSearch_Click to track and retrieve event metadata like category and keyword frequency using dictionaries
         private Dictionary<string, int> searchFrequency = new Dictionary<string, int>();
         private Dictionary<string, int> keywordFrequency = new Dictionary<string, int>();
 
@@ -21,6 +23,7 @@ namespace CommunityHub
         {
             InitializeComponent();
 
+            // ──────────────── ToolTips Setup ────────────────
             ToolTip tooltips = new ToolTip
             {
                 AutoPopDelay = 5000,
@@ -29,7 +32,6 @@ namespace CommunityHub
                 ShowAlways = true
             };
 
-            // Assign tooltips to controls
             tooltips.SetToolTip(cmbCategory, "Filter events by category. Select 'All' to view everything.");
             tooltips.SetToolTip(dtpDate, "Choose a specific date to narrow results. Uncheck to ignore date.");
             tooltips.SetToolTip(txtKeyword, "Search by title or description keywords like 'cleanup' or 'water'.");
@@ -38,18 +40,19 @@ namespace CommunityHub
             tooltips.SetToolTip(flowEvents, "Search results will appear here.");
             tooltips.SetToolTip(flowRecommendations, "Recommended events based on your recent searches.");
 
-
+            // ──────────────── Event Wiring ────────────────
             btnBackHome.Click += BtnBackHome_Click;
             btnSearch.Click += BtnSearch_Click;
             btnClearSearch.Click += BtnClearSearch_Click;
+
+            // ──────────────── Initial Load ────────────────
             LoadMockEvents();
             PopulateInsightsPanel();
-           
         }
 
         private void BtnBackHome_Click(object sender, EventArgs e)
         {
-            this.Close(); // closes the modal and returns to HomePage
+            this.Close();
         }
         private void BtnSearch_Click(object sender, EventArgs e)
         {
@@ -57,7 +60,7 @@ namespace CommunityHub
             DateTime selectedDate = dtpDate.Value.Date;
             string keyword = txtKeyword.Text.Trim().ToLower();
 
-            // Phase 2: Track category frequency
+            
             if (!string.IsNullOrEmpty(selectedCategory) && selectedCategory != "All")
             {
                 if (!searchFrequency.ContainsKey(selectedCategory))
@@ -66,7 +69,6 @@ namespace CommunityHub
                 searchFrequency[selectedCategory]++;
             }
 
-            // Phase 2: Track keyword frequency
             if (!string.IsNullOrEmpty(keyword))
             {
                 if (!keywordFrequency.ContainsKey(keyword))
@@ -84,47 +86,25 @@ namespace CommunityHub
                  ev.Description.ToLower().Contains(keyword))
             ).ToList();
 
-
-            filtered.Sort((a, b) => a.Date.CompareTo(b.Date)); // soonest first
+            filtered.Sort((a, b) => a.Date.CompareTo(b.Date)); 
 
             RenderEvents(filtered);
-
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine("Search Frequency:");
-            foreach (var kvp in searchFrequency)
-                sb.AppendLine($"{kvp.Key}: {kvp.Value}");
-
-            sb.AppendLine();
-            sb.AppendLine("Keyword Frequency:");
-            foreach (var kvp in keywordFrequency)
-                sb.AppendLine($"{kvp.Key}: {kvp.Value}");
-
-            MessageBox.Show(sb.ToString(), "Search Tracking Summary", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
             var recommended = GetRecommendedEvents();
             RenderRecommendations(recommended);
 
         }
 
+        //Demonstrates use of a queue to manage event-related data.
         private void LoadMockEvents()
         {
-            // Retrieve upcoming events from the mock service
             Queue<Event> eventQueue = MockEventService.GetUpcomingEvents();
-
-            // Dequeue events into a list to allow sorting
             List<Event> events = new List<Event>();
             while (eventQueue.Count > 0)
             {
                 events.Add(eventQueue.Dequeue());
             }
-
-            // Sort events by date (soonest first)
             events.Sort((a, b) => a.Date.CompareTo(b.Date));
-
-            // Render the sorted list to the UI
             RenderEvents(events);
- 
         }
 
         private void BtnClearSearch_Click(object sender, EventArgs e)
@@ -132,7 +112,7 @@ namespace CommunityHub
             cmbCategory.SelectedIndex = 0;
             dtpDate.Value = DateTime.Today;
             txtKeyword.Text = "";
-            LoadMockEvents(); // reload all events
+            LoadMockEvents();
         }
 
         private void RenderEvents(List<Event> events)
@@ -201,6 +181,11 @@ namespace CommunityHub
             }
         }
 
+
+        /// <summary>
+        /// Analyzes user search patterns, applies frequency-based filtering using dictionaries,
+        /// and returns chronologically sorted recommended events for user-friendly display.
+        /// </summary>
         private List<Event> GetRecommendedEvents()
         {
             var allEvents = MockEventService.GetUpcomingEvents();
@@ -224,9 +209,6 @@ namespace CommunityHub
                     .Select(kvp => kvp.Key)
                     .ToList();
             }
-
-            // Debug output to verify logic
-            MessageBox.Show($"Top categories: {string.Join(", ", topCategories)}\nKeyword: {keyword}\nDate Filter: {(useDateFilter ? selectedDate.ToShortDateString() : "None")}");
 
             var recommended = allEvents
                 .Where(ev =>
@@ -308,6 +290,8 @@ namespace CommunityHub
             BtnSearch_Click(null, null); // Trigger search
         }
 
+
+        // Uses sets to track unique categories and dates while populating the insights panel with tags, summaries, and metadata.
         private void PopulateInsightsPanel()
         {
             var events = MockEventService.GetUpcomingEvents();
@@ -354,6 +338,5 @@ namespace CommunityHub
             lblMetaCategories.Text = $"Categories: {uniqueCategories.Count}";
             lblMetaDates.Text = $"Unique Dates: {uniqueDates.Count}";
         }
-
     }
 }
