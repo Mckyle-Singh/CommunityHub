@@ -115,6 +115,7 @@ namespace CommunityHub
             LoadMockEvents();
         }
 
+        //this method is used to display upcoming events and announcements in an aesthetically pleasing manner
         private void RenderEvents(List<Event> events)
         {
             flowEvents.Controls.Clear();
@@ -124,7 +125,7 @@ namespace CommunityHub
             {
                 Panel card = new Panel
                 {
-                    Width = 800,
+                    Width = 400,
                     Height = 100,
                     BackColor = Color.White,
                     Margin = new Padding(10),
@@ -290,7 +291,6 @@ namespace CommunityHub
             BtnSearch_Click(null, null); // Trigger search
         }
 
-
         // Uses sets to track unique categories and dates while populating the insights panel with tags, summaries, and metadata.
         private void PopulateInsightsPanel()
         {
@@ -319,8 +319,11 @@ namespace CommunityHub
                     FlatAppearance = { BorderSize = 0 },
                     Margin = new Padding(3, 0, 3, 0),
                     Padding = new Padding(6, 3, 6, 3),
-                    AutoSize = true
+                    Width = 90, // Fixed width ensures alignment
+                    Height = 30 // Optional for consistency
                 };
+
+
                 btnTag.Click += (s, e) => FilterByCategory(cat);
                 flowTags.Controls.Add(btnTag);
             }

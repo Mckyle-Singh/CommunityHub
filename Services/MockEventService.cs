@@ -9,6 +9,8 @@ namespace CommunityHub.Services
 {
     public class MockEventService
     {
+        //Used queues to manage event-related data
+
         public static Queue<Event> GetUpcomingEvents()
         {
             var events = new Queue<Event>();

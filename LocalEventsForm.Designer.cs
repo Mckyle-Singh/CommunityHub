@@ -204,7 +204,7 @@
             panelInsights = new Panel
             {
                 Dock = DockStyle.Right,
-                Width = 260,
+                Width = 300,
                 BackColor = Color.WhiteSmoke,
                 Padding = new Padding(10)
             };
@@ -229,14 +229,17 @@
             flowTags = new FlowLayoutPanel
             {
                 FlowDirection = FlowDirection.LeftToRight,
-                WrapContents = false,
-                AutoScroll = true,
-                Height = 40,
+                WrapContents = false,           // Prevent wrapping
+                AutoScroll = true,             // Prevent scrollbars
                 Dock = DockStyle.Top,
+                Height = 40,                    // Enough for one row
+                Width = panelInsights.Width - 20, // Slight padding
                 Margin = new Padding(0, 5, 0, 10),
                 Padding = new Padding(0),
                 BackColor = Color.Transparent
             };
+
+
 
             lblDateSummary = new Label
             {
@@ -255,11 +258,38 @@
                 ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize,
                 AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
                 BackgroundColor = Color.White,
+                BorderStyle = BorderStyle.None,
+                GridColor = Color.LightGray,
                 Height = 100,
-                Margin = new Padding(0, 0, 0, 10)
+                Margin = new Padding(0, 0, 0, 10),
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                EnableHeadersVisualStyles = false
             };
+
+            // Add columns
             dgvSummary.Columns.Add("Date", "Date");
             dgvSummary.Columns.Add("EventCount", "Event Count");
+
+            // ---------- Styling ----------
+            dgvSummary.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
+            {
+                BackColor = Color.FromArgb(240, 240, 240), // Light gray header
+                ForeColor = Color.Black,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                Alignment = DataGridViewContentAlignment.MiddleLeft,
+                SelectionBackColor = Color.FromArgb(240, 240, 240),
+                SelectionForeColor = Color.Black
+            };
+
+            dgvSummary.DefaultCellStyle = new DataGridViewCellStyle
+            {
+                BackColor = Color.White,
+                ForeColor = Color.Black,
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                SelectionBackColor = Color.FromArgb(230, 230, 230),
+                SelectionForeColor = Color.Black,
+                Padding = new Padding(3)
+            };
 
             lblMetaSummary = new Label
             {
