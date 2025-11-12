@@ -67,6 +67,18 @@ namespace CommunityHub
             MessageBox.Show($"Filtering: {status}, {category}, \"{keyword}\"");
         }
 
+        private void dgvRequests_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (dgvRequests.Columns[e.ColumnIndex].Name == "Status" && e.Value != null)
+            {
+                string status = e.Value.ToString();
+                if (status == "Pending")
+                    e.CellStyle.ForeColor = Color.DarkOrange;
+                else if (status == "Resolved")
+                    e.CellStyle.ForeColor = Color.ForestGreen;
+            }
+        }
+
 
 
     }

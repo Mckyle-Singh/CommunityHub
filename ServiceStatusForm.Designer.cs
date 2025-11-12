@@ -32,7 +32,9 @@
         private System.Windows.Forms.Label lblCategory;
         private System.Windows.Forms.Label lblSearch;
 
-
+        //data grid view
+        private System.Windows.Forms.Panel tableContainer;
+        private System.Windows.Forms.DataGridView dgvRequests;
 
         protected override void Dispose(bool disposing)
         {
@@ -48,6 +50,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Text = "ServiceStatusForm";
 
+            InitializeRequestTable();
             InitializeFilterSection();
             InitializeKpiTiles();
             InitializeHeader();
@@ -217,5 +220,63 @@
 
             this.Controls.Add(filterPanel);
         }
+
+        private void InitializeRequestTable()
+        {
+            // Container panel to center the table
+            tableContainer = new Panel
+            {
+                Dock = DockStyle.Fill,
+                Padding = new Padding(20),
+                BackColor = Color.White
+            };
+
+            dgvRequests = new DataGridView
+            {
+                Size = new Size(760, 300),
+                Location = new Point(20, 10),
+                BackgroundColor = Color.White,
+                BorderStyle = BorderStyle.None,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                ReadOnly = true,
+                RowHeadersVisible = false,
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                Font = new Font("Segoe UI", 10F),
+                ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                    BackColor = Color.FromArgb(240, 240, 240),
+                    ForeColor = Color.Black,
+                    SelectionBackColor = Color.FromArgb(200, 200, 200),
+                    SelectionForeColor = Color.Black,
+                    Alignment = DataGridViewContentAlignment.MiddleLeft
+                },
+                EnableHeadersVisualStyles = false
+
+
+            };
+
+            dgvRequests.Columns.Add("RequestId", "Request ID");
+            dgvRequests.Columns.Add("Category", "Category");
+            dgvRequests.Columns.Add("Status", "Status");
+            dgvRequests.Columns.Add("Date", "Date");
+            dgvRequests.Columns.Add("Summary", "Summary");
+
+            // Sample data
+            dgvRequests.Rows.Add("REQ-001", "Water", "Pending", "2025-11-10", "Burst pipe on Main Street");
+            dgvRequests.Rows.Add("REQ-002", "Electricity", "Resolved", "2025-11-09", "Power outage in Zone 3");
+            dgvRequests.Rows.Add("REQ-003", "Roads", "Pending", "2025-11-08", "Pothole near school entrance");
+
+            dgvRequests.CellFormatting += dgvRequests_CellFormatting;
+
+            tableContainer.Controls.Add(dgvRequests);
+            this.Controls.Add(tableContainer);
+        }
+
+
+
+
     }
 }
