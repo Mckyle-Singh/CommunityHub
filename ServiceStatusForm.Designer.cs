@@ -15,15 +15,22 @@
         private System.Windows.Forms.Panel tileTotal;
         private System.Windows.Forms.Panel tilePending;
         private System.Windows.Forms.Panel tileLocal;
-
         private System.Windows.Forms.Label lblTotalTitle;
         private System.Windows.Forms.Label lblTotalValue;
-
         private System.Windows.Forms.Label lblPendingTitle;
         private System.Windows.Forms.Label lblPendingValue;
-
         private System.Windows.Forms.Label lblLocalTitle;
         private System.Windows.Forms.Label lblLocalValue;
+
+        //filter section
+        private System.Windows.Forms.Panel filterPanel;
+        private System.Windows.Forms.ComboBox cmbStatus;
+        private System.Windows.Forms.ComboBox cmbCategory;
+        private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.Button btnSearch;
+        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Label lblCategory;
+        private System.Windows.Forms.Label lblSearch;
 
 
 
@@ -41,7 +48,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Text = "ServiceStatusForm";
 
-
+            InitializeFilterSection();
             InitializeKpiTiles();
             InitializeHeader();
            
@@ -125,6 +132,90 @@
             this.Controls.Add(kpiPanel);
         }
 
+        private void InitializeFilterSection()
+        {
+            filterPanel = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 60,
+                Padding = new Padding(20, 10, 20, 10),
+                BackColor = Color.White
+            };
 
+            lblStatus = new Label
+            {
+                Text = "Status:",
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                Location = new Point(20, 0),
+                AutoSize = true
+            };
+
+            cmbStatus = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10F),
+                Location = new Point(20, 15),
+                Size = new Size(150, 30)
+            };
+            cmbStatus.Items.AddRange(new string[] { "All", "Pending", "Resolved" });
+            cmbStatus.SelectedIndex = 0;
+
+            lblCategory = new Label
+            {
+                Text = "Category:",
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                Location = new Point(190, 0),
+                AutoSize = true
+            };
+
+            cmbCategory = new ComboBox
+            {
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Font = new Font("Segoe UI", 10F),
+                Location = new Point(190, 15),
+                Size = new Size(150, 30)
+            };
+            cmbCategory.Items.AddRange(new string[] { "All", "Water", "Electricity", "Roads" });
+            cmbCategory.SelectedIndex = 0;
+
+            lblSearch = new Label
+            {
+                Text = "Search:",
+                Font = new Font("Segoe UI", 9F, FontStyle.Regular),
+                Location = new Point(360, 0),
+                AutoSize = true
+            };
+
+            txtSearch = new TextBox
+            {
+                Font = new Font("Segoe UI", 10F),
+                Location = new Point(360, 15),
+                Size = new Size(200, 30),
+                PlaceholderText = "Search by keyword..."
+            };
+
+            btnSearch = new Button
+            {
+                Text = "Search",
+                Font = new Font("Segoe UI", 10F),
+                Size = new Size(100, 30),
+                Location = new Point(570, 15),
+                BackColor = Color.FromArgb(45, 45, 48),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat
+            };
+            btnSearch.FlatAppearance.BorderSize = 0;
+            btnSearch.Click += new EventHandler(this.BtnSearch_Click);
+
+            filterPanel.Controls.Add(lblStatus);
+            filterPanel.Controls.Add(cmbStatus);
+            filterPanel.Controls.Add(lblCategory);
+            filterPanel.Controls.Add(cmbCategory);
+            filterPanel.Controls.Add(lblSearch);
+            filterPanel.Controls.Add(txtSearch);
+            filterPanel.Controls.Add(btnSearch);
+
+            this.Controls.Add(filterPanel);
+        }
     }
 }

@@ -58,6 +58,15 @@ namespace CommunityHub
         }
 
 
+        private void BtnSearch_Click(object sender, EventArgs e)
+        {
+            string status = cmbStatus.SelectedItem.ToString();
+            string category = cmbCategory.SelectedItem.ToString();
+            string keyword = txtSearch.Text.Trim();
+
+            MessageBox.Show($"Filtering: {status}, {category}, \"{keyword}\"");
+        }
+
 
 
     }
