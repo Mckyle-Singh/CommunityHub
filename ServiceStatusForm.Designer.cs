@@ -10,6 +10,23 @@
         private System.Windows.Forms.Button btnBackHome;
         private System.Windows.Forms.Label lblTitle;
 
+        //Tile controlls
+        private System.Windows.Forms.Panel kpiPanel;
+        private System.Windows.Forms.Panel tileTotal;
+        private System.Windows.Forms.Panel tilePending;
+        private System.Windows.Forms.Panel tileLocal;
+
+        private System.Windows.Forms.Label lblTotalTitle;
+        private System.Windows.Forms.Label lblTotalValue;
+
+        private System.Windows.Forms.Label lblPendingTitle;
+        private System.Windows.Forms.Label lblPendingValue;
+
+        private System.Windows.Forms.Label lblLocalTitle;
+        private System.Windows.Forms.Label lblLocalValue;
+
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -24,7 +41,11 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Text = "ServiceStatusForm";
 
+
+            InitializeKpiTiles();
             InitializeHeader();
+           
+
         }
 
         private void InitializeHeader()
@@ -78,5 +99,32 @@
             headerPanel.Controls.Add(rightHeaderPanel);
             this.Controls.Add(headerPanel);
         }
+
+        private void InitializeKpiTiles()
+        {
+            kpiPanel = new Panel
+            {
+                Dock = DockStyle.Top,
+                Height = 120,
+                Padding = new Padding(20, 10, 20, 10),
+                BackColor = Color.White
+            };
+
+            tileTotal = CreateKpiTile("Total Requests", "128", Color.FromArgb(240, 248, 255));
+            tilePending = CreateKpiTile("Pending Requests", "37", Color.FromArgb(255, 250, 205));
+            tileLocal = CreateKpiTile("Local Requests", "19", Color.FromArgb(245, 255, 250));
+
+            tileTotal.Location = new Point(20, 20);
+            tilePending.Location = new Point(280, 20);
+            tileLocal.Location = new Point(540, 20);
+
+            kpiPanel.Controls.Add(tileTotal);
+            kpiPanel.Controls.Add(tilePending);
+            kpiPanel.Controls.Add(tileLocal);
+
+            this.Controls.Add(kpiPanel);
+        }
+
+
     }
 }

@@ -24,6 +24,41 @@ namespace CommunityHub
             this.Close(); // Or navigate to HomePage if needed
         }
 
+        private Panel CreateKpiTile(string title, string value, Color bgColor)
+        {
+            Panel tile = new Panel
+            {
+                Size = new Size(220, 80),
+                BackColor = bgColor,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            Label lblTitle = new Label
+            {
+                Text = title,
+                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
+                ForeColor = Color.Black,
+                Location = new Point(10, 10),
+                AutoSize = true
+            };
+
+            Label lblValue = new Label
+            {
+                Text = value,
+                Font = new Font("Segoe UI", 20F, FontStyle.Bold),
+                ForeColor = Color.Black,
+                Location = new Point(10, 35),
+                AutoSize = true
+            };
+
+            tile.Controls.Add(lblTitle);
+            tile.Controls.Add(lblValue);
+
+            return tile;
+        }
+
+
+
 
     }
 }
