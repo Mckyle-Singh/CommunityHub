@@ -1,4 +1,7 @@
-﻿using System;
+﻿using CommunityHub.DataStructures.Trees;
+using CommunityHub.Domain;
+using CommunityHub.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,11 +15,16 @@ namespace CommunityHub
 {
     public partial class ServiceStatusForm : Form
     {
+        private ServiceRequestBST bst = new ServiceRequestBST();
+
         public ServiceStatusForm()
         {
             InitializeComponent();
             this.Text = "Service Request Status";
             this.BackColor = Color.White;
+
+            LoadSampleRequests();
+            BindRequestsToTable();
         }
 
         private void BtnBackHome_Click(object sender, EventArgs e)
@@ -76,6 +84,60 @@ namespace CommunityHub
                     e.CellStyle.ForeColor = Color.DarkOrange;
                 else if (status == "Resolved")
                     e.CellStyle.ForeColor = Color.ForestGreen;
+            }
+        }
+
+
+        /// <summary>
+        /// Populates the Binary Search Tree (BST) with sample service requests.
+        /// The requests are inserted out of order (REQ-002, REQ-001, REQ-003),
+        /// and later retrieved in sorted order using InOrderTraversal() to populate the DataGridView.
+        /// This confirms that the BST is functioning correctly.
+        /// </summary>
+        private void LoadSampleRequests()
+        {
+            bst.Insert(new ServiceRequest("REQ-002")
+            {
+                ServiceType = "Electricity",
+                Subject = "Power outage in Zone 3",
+                Status = RequestStatus.Resolved,
+                CreatedAt = new DateTime(2025, 11, 09)
+            });
+
+            bst.Insert(new ServiceRequest("REQ-001")
+            {
+                ServiceType = "Water",
+                Subject = "Burst pipe on Main Street",
+                Status = RequestStatus.Submitted,
+                CreatedAt = new DateTime(2025, 11, 10)
+            });
+
+           
+            bst.Insert(new ServiceRequest("REQ-003")
+            {
+                ServiceType = "Roads",
+                Subject = "Pothole near school entrance",
+                Status = RequestStatus.Submitted,
+                CreatedAt = new DateTime(2025, 11, 08)
+            });
+        }
+
+
+        private void BindRequestsToTable()
+        {
+            if (dgvRequests == null) return; // Safety check
+
+            dgvRequests.Rows.Clear(); // Clear any existing rows
+
+            foreach (var req in bst.InOrderTraversal())
+            {
+                dgvRequests.Rows.Add(
+                    req.Id,
+                    req.ServiceType,
+                    req.Status.ToString(),
+                    req.CreatedAt.ToShortDateString(),
+                    req.Subject
+                );
             }
         }
 

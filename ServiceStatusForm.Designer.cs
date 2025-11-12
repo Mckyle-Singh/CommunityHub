@@ -265,18 +265,15 @@
             dgvRequests.Columns.Add("Summary", "Summary");
 
             // Sample data
-            dgvRequests.Rows.Add("REQ-001", "Water", "Pending", "2025-11-10", "Burst pipe on Main Street");
-            dgvRequests.Rows.Add("REQ-002", "Electricity", "Resolved", "2025-11-09", "Power outage in Zone 3");
-            dgvRequests.Rows.Add("REQ-003", "Roads", "Pending", "2025-11-08", "Pothole near school entrance");
+            //dgvRequests.Rows.Add("REQ-001", "Water", "Pending", "2025-11-10", "Burst pipe on Main Street");
+            //dgvRequests.Rows.Add("REQ-002", "Electricity", "Resolved", "2025-11-09", "Power outage in Zone 3");
+            //dgvRequests.Rows.Add("REQ-003", "Roads", "Pending", "2025-11-08", "Pothole near school entrance");
 
             dgvRequests.CellFormatting += dgvRequests_CellFormatting;
 
             tableContainer.Controls.Add(dgvRequests);
             this.Controls.Add(tableContainer);
         }
-
-
-
 
     }
 }
