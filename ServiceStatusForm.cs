@@ -16,6 +16,8 @@ namespace CommunityHub
     public partial class ServiceStatusForm : Form
     {
         private ServiceRequestBST bst = new ServiceRequestBST();
+        private ServiceRequestAVL avl = new ServiceRequestAVL();
+
 
         public ServiceStatusForm()
         {
@@ -70,9 +72,26 @@ namespace CommunityHub
         {
             string status = cmbStatus.SelectedItem.ToString();
             string category = cmbCategory.SelectedItem.ToString();
-            string keyword = txtSearch.Text.Trim();
+            string keyword = txtSearch.Text.Trim().ToLower();
 
-            MessageBox.Show($"Filtering: {status}, {category}, \"{keyword}\"");
+            dgvRequests.Rows.Clear();
+
+            var filtered = avl.FilteredTraversal(req =>
+                (status == "All" || req.Status.ToString() == status) &&
+                (category == "All" || req.ServiceType == category) &&
+                (string.IsNullOrEmpty(keyword) || req.Subject.ToLower().Contains(keyword))
+            );
+
+            foreach (var req in filtered)
+            {
+                dgvRequests.Rows.Add(
+                    req.Id,
+                    req.ServiceType,
+                    req.Status.ToString(),
+                    req.CreatedAt.ToShortDateString(),
+                    req.Subject
+                );
+            }
         }
 
         private void dgvRequests_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -96,31 +115,36 @@ namespace CommunityHub
         /// </summary>
         private void LoadSampleRequests()
         {
-            bst.Insert(new ServiceRequest("REQ-002")
-            {
-                ServiceType = "Electricity",
-                Subject = "Power outage in Zone 3",
-                Status = RequestStatus.Resolved,
-                CreatedAt = new DateTime(2025, 11, 09)
-            });
-
-            bst.Insert(new ServiceRequest("REQ-001")
+            var req1 = new ServiceRequest("REQ-001")
             {
                 ServiceType = "Water",
                 Subject = "Burst pipe on Main Street",
                 Status = RequestStatus.Submitted,
                 CreatedAt = new DateTime(2025, 11, 10)
-            });
+            };
 
-           
-            bst.Insert(new ServiceRequest("REQ-003")
+            var req2 = new ServiceRequest("REQ-002")
+            {
+                ServiceType = "Electricity",
+                Subject = "Power outage in Zone 3",
+                Status = RequestStatus.Resolved,
+                CreatedAt = new DateTime(2025, 11, 09)
+            };
+
+            var req3 = new ServiceRequest("REQ-003")
             {
                 ServiceType = "Roads",
                 Subject = "Pothole near school entrance",
                 Status = RequestStatus.Submitted,
                 CreatedAt = new DateTime(2025, 11, 08)
-            });
+            };
+
+            // Insert into both BST and AVL
+            bst.Insert(req1); avl.Insert(req1);
+            bst.Insert(req2); avl.Insert(req2);
+            bst.Insert(req3); avl.Insert(req3);
         }
+
 
 
         private void BindRequestsToTable()
@@ -140,8 +164,6 @@ namespace CommunityHub
                 );
             }
         }
-
-
 
     }
 }
