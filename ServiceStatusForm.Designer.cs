@@ -42,6 +42,11 @@
         private Label lblUrgentTitle;
         private ListView lvUrgentRequests;
 
+        // Blocked Chain Panel
+        private FlowLayoutPanel blockedChainPanel;
+        private Label lblBlockedChainTitle;
+
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -56,6 +61,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Text = "ServiceStatusForm";
 
+            InitializeBlockedChainPanel();
             InitializeUrgentRequestSection();
             InitializeRequestTable();
             InitializeFilterSection();
@@ -323,6 +329,35 @@
 
             this.Controls.Add(urgentPanel);
         }
+
+        private void InitializeBlockedChainPanel()
+        {
+            lblBlockedChainTitle = new Label
+            {
+                Text = "Blocked Chain",
+                Font = new Font("Segoe UI", 12, FontStyle.Bold),
+                ForeColor = Color.Black,
+                Location = new Point(20, 360),
+                AutoSize = true
+            };
+
+            blockedChainPanel = new FlowLayoutPanel
+            {
+                Name = "blockedChainPanel",
+                FlowDirection = FlowDirection.LeftToRight,
+                AutoSize = true,
+                WrapContents = false,
+                Location = new Point(20, 390),
+                Size = new Size(760, 80),
+                BackColor = Color.White,
+                Padding = new Padding(5)
+            };
+
+            this.Controls.Add(lblBlockedChainTitle);
+            this.Controls.Add(blockedChainPanel);
+
+        }
+
 
     }
 }

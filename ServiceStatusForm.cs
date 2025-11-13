@@ -1,4 +1,5 @@
-﻿using CommunityHub.DataStructures.Heaps;
+﻿using CommunityHub.DataStructures.GraphTraversal;
+using CommunityHub.DataStructures.Heaps;
 using CommunityHub.DataStructures.Trees;
 using CommunityHub.Domain;
 using CommunityHub.Models;
@@ -19,6 +20,8 @@ namespace CommunityHub
         private ServiceRequestBST bst = new ServiceRequestBST();
         private ServiceRequestAVL avl = new ServiceRequestAVL();
         private MaxHeap<ServiceRequest> urgentHeap = new MaxHeap<ServiceRequest>((a, b) => a.PriorityScore.CompareTo(b.PriorityScore));
+        private Dictionary<string, ServiceRequest> allRequests = new();
+
 
 
         public ServiceStatusForm()
@@ -30,6 +33,8 @@ namespace CommunityHub
             LoadSampleRequests();
             BindRequestsToTable();
             DisplayUrgentRequests();
+            RenderBlockedChain("REQ-003");
+
         }
 
         private void BtnBackHome_Click(object sender, EventArgs e)
@@ -122,7 +127,7 @@ namespace CommunityHub
             {
                 ServiceType = "Water",
                 Subject = "Burst pipe on Main Street",
-                Status = RequestStatus.Submitted,
+                Status = RequestStatus.Resolved,
                 CreatedAt = new DateTime(2025, 11, 10),
                 PriorityScore = 90
             };
@@ -131,18 +136,20 @@ namespace CommunityHub
             {
                 ServiceType = "Electricity",
                 Subject = "Power outage in Zone 3",
-                Status = RequestStatus.Resolved,
+                Status = RequestStatus.Submitted,
                 CreatedAt = new DateTime(2025, 11, 09),
-                PriorityScore = 60
+                PriorityScore = 60,
+                Dependencies = new List<string> { "REQ-001" } // depends on REQ-001
             };
 
             var req3 = new ServiceRequest("REQ-003")
             {
                 ServiceType = "Roads",
                 Subject = "Pothole near school entrance",
-                Status = RequestStatus.Submitted,
+                Status = RequestStatus.Blocked,
                 CreatedAt = new DateTime(2025, 11, 08),
-                PriorityScore = 80
+                PriorityScore = 80,
+                Dependencies = new List<string> { "REQ-002" } // depends on REQ-002
             };
 
             // Insert into BST and AVL
@@ -154,6 +161,11 @@ namespace CommunityHub
             urgentHeap.Insert(req1);
             urgentHeap.Insert(req2);
             urgentHeap.Insert(req3);
+
+            // Store for graph traversal
+            allRequests["REQ-001"] = req1;
+            allRequests["REQ-002"] = req2;
+            allRequests["REQ-003"] = req3;
         }
 
         private void BindRequestsToTable()
@@ -191,6 +203,64 @@ namespace CommunityHub
                 lvUrgentRequests.Items.Add(item);
             }
         }
+
+
+        /// <summary>
+        /// 
+        /// Blocked Chain Panel:
+        /// - Uses Depth-First Search (DFS) to trace dependencies between ServiceRequests
+        /// - Renders a horizontal chain of request cards with arrows
+        /// - Color-coded: Red (Blocked), Gold (Submitted), Green (Resolved)
+        /// 
+        /// </summary>
+        private void RenderBlockedChain(string rootId)
+        {
+            blockedChainPanel.Controls.Clear();
+
+            var chain = DfsTraversal.GetBlockedChain(rootId, allRequests); // DFS traversal
+
+            foreach (var req in chain)
+            {
+                var card = new Panel
+                {
+                    Width = 120,
+                    Height = 60,
+                    Margin = new Padding(5),
+                    BackColor = req.Status switch
+                    {
+                        RequestStatus.Blocked => Color.Red,
+                        RequestStatus.Resolved => Color.Green,
+                        _ => Color.Gold
+                    }
+                };
+
+                var label = new Label
+                {
+                    Text = $"{req.Id}\n{req.Status}",
+                    ForeColor = req.Status == RequestStatus.Submitted ? Color.Black : Color.White,
+                    Dock = DockStyle.Fill,
+                    TextAlign = ContentAlignment.MiddleCenter
+                };
+
+                card.Controls.Add(label);
+                blockedChainPanel.Controls.Add(card);
+
+                if (req != chain.Last())
+                {
+                    var arrow = new Label
+                    {
+                        Text = "→",
+                        Font = new Font("Segoe UI", 16, FontStyle.Bold),
+                        AutoSize = true,
+                        ForeColor = Color.Black,
+                        Padding = new Padding(5)
+                    };
+                    blockedChainPanel.Controls.Add(arrow);
+                }
+            }
+        }
+
+
 
     }
 }

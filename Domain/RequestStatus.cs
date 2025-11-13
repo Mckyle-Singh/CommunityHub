@@ -13,7 +13,7 @@ namespace CommunityHub.Domain
         Scheduled,
         Assigned,
         InProgress,
-        OnHold,
+        Blocked,
         Resolved
     }
 }
