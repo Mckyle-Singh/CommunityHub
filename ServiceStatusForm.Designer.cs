@@ -36,6 +36,12 @@
         private System.Windows.Forms.Panel tableContainer;
         private System.Windows.Forms.DataGridView dgvRequests;
 
+
+        //urgent request 
+        private Panel urgentPanel;
+        private Label lblUrgentTitle;
+        private ListView lvUrgentRequests;
+
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -50,6 +56,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Text = "ServiceStatusForm";
 
+            InitializeUrgentRequestSection();
             InitializeRequestTable();
             InitializeFilterSection();
             InitializeKpiTiles();
@@ -273,6 +280,48 @@
 
             tableContainer.Controls.Add(dgvRequests);
             this.Controls.Add(tableContainer);
+        }
+
+        private void InitializeUrgentRequestSection()
+        {
+            urgentPanel = new Panel
+            {
+                Width = 250,
+                Height = 150, // Constrained height so it doesn't stretch down
+                Anchor = AnchorStyles.Top | AnchorStyles.Right,
+                Location = new Point(this.ClientSize.Width - 270, 100), // Adjust Y to align with filters
+                Padding = new Padding(10),
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle
+            };
+
+            lblUrgentTitle = new Label
+            {
+                Text = "Urgent Requests",
+                Font = new Font("Segoe UI", 11F, FontStyle.Bold),
+                Dock = DockStyle.Top,
+                Height = 25,
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+
+            lvUrgentRequests = new ListView
+            {
+                View = View.Details,
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI", 9F),
+                FullRowSelect = true,
+                GridLines = true,
+                HeaderStyle = ColumnHeaderStyle.Nonclickable
+            };
+
+            // Simplified columns: only ID and Category
+            lvUrgentRequests.Columns.Add("Request ID", 100);
+            lvUrgentRequests.Columns.Add("Category", 120);
+
+            urgentPanel.Controls.Add(lvUrgentRequests);
+            urgentPanel.Controls.Add(lblUrgentTitle);
+
+            this.Controls.Add(urgentPanel);
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using CommunityHub.DataStructures.Trees;
+﻿using CommunityHub.DataStructures.Heaps;
+using CommunityHub.DataStructures.Trees;
 using CommunityHub.Domain;
 using CommunityHub.Models;
 using System;
@@ -17,6 +18,7 @@ namespace CommunityHub
     {
         private ServiceRequestBST bst = new ServiceRequestBST();
         private ServiceRequestAVL avl = new ServiceRequestAVL();
+        private MaxHeap<ServiceRequest> urgentHeap = new MaxHeap<ServiceRequest>((a, b) => a.PriorityScore.CompareTo(b.PriorityScore));
 
 
         public ServiceStatusForm()
@@ -27,6 +29,7 @@ namespace CommunityHub
 
             LoadSampleRequests();
             BindRequestsToTable();
+            DisplayUrgentRequests();
         }
 
         private void BtnBackHome_Click(object sender, EventArgs e)
@@ -120,7 +123,8 @@ namespace CommunityHub
                 ServiceType = "Water",
                 Subject = "Burst pipe on Main Street",
                 Status = RequestStatus.Submitted,
-                CreatedAt = new DateTime(2025, 11, 10)
+                CreatedAt = new DateTime(2025, 11, 10),
+                PriorityScore = 90
             };
 
             var req2 = new ServiceRequest("REQ-002")
@@ -128,7 +132,8 @@ namespace CommunityHub
                 ServiceType = "Electricity",
                 Subject = "Power outage in Zone 3",
                 Status = RequestStatus.Resolved,
-                CreatedAt = new DateTime(2025, 11, 09)
+                CreatedAt = new DateTime(2025, 11, 09),
+                PriorityScore = 60
             };
 
             var req3 = new ServiceRequest("REQ-003")
@@ -136,16 +141,20 @@ namespace CommunityHub
                 ServiceType = "Roads",
                 Subject = "Pothole near school entrance",
                 Status = RequestStatus.Submitted,
-                CreatedAt = new DateTime(2025, 11, 08)
+                CreatedAt = new DateTime(2025, 11, 08),
+                PriorityScore = 80
             };
 
-            // Insert into both BST and AVL
+            // Insert into BST and AVL
             bst.Insert(req1); avl.Insert(req1);
             bst.Insert(req2); avl.Insert(req2);
             bst.Insert(req3); avl.Insert(req3);
+
+            // Insert into MaxHeap (for urgent triage)
+            urgentHeap.Insert(req1);
+            urgentHeap.Insert(req2);
+            urgentHeap.Insert(req3);
         }
-
-
 
         private void BindRequestsToTable()
         {
@@ -162,6 +171,24 @@ namespace CommunityHub
                     req.CreatedAt.ToShortDateString(),
                     req.Subject
                 );
+            }
+        }
+
+        private void DisplayUrgentRequests()
+        {
+            lvUrgentRequests.Items.Clear();
+
+            // Get all requests from the heap
+            var allUrgents = urgentHeap.PeekTopN(urgentHeap.Count);
+
+            // Filter by PriorityScore ≥ 70
+            var filtered = allUrgents.Where(r => r.PriorityScore >= 70);
+
+            foreach (var req in filtered)
+            {
+                var item = new ListViewItem(req.Id);
+                item.SubItems.Add(req.ServiceType); // or req.Category
+                lvUrgentRequests.Items.Add(item);
             }
         }
 
