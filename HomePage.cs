@@ -11,7 +11,7 @@ namespace GovernmentApp
             LoadReports();
             btnReportIssue.Click += BtnReportIssue_Click;
             btnLocalEvents.Click += BtnLocalEvents_Click;
-            btnServiceStatus.Click += (s, e) => ShowComingSoonPopup("Service Request Status");
+            btnServiceStatus.Click += BtnServiceStatus_Click;
         }
 
         private void BtnReportIssue_Click(object sender, EventArgs e)
@@ -104,7 +104,15 @@ namespace GovernmentApp
             }
         }
 
-
+        private void BtnServiceStatus_Click(object sender, EventArgs e)
+        {
+            using (ServiceStatusForm statusForm = new ServiceStatusForm())
+            {
+                this.Hide();               // hide current window
+                statusForm.ShowDialog();   // open ServiceStatusForm modally
+                this.Show();               // show HomePage again after closing
+            }
+        }
 
     }
 }
