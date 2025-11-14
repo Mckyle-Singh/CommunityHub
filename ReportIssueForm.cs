@@ -39,73 +39,92 @@ namespace GovernmentApp
 
         private void btnAttachMedia_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            try
             {
-                openFileDialog.Title = "Select a file";
-                openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp|Video Files|*.mp4;*.avi;*.mov|All Files|*.*";
-                openFileDialog.Multiselect = false;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    string selectedFile = openFileDialog.FileName;
-                    MessageBox.Show($"Selected file: {selectedFile}", "Attachment Added", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    openFileDialog.Title = "Select a file";
+                    openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp|Video Files|*.mp4;*.avi;*.mov|All Files|*.*";
+                    openFileDialog.Multiselect = false;
 
-                    // If it’s an image, display it in PictureBox
-                    if (selectedFile.EndsWith(".jpg") || selectedFile.EndsWith(".jpeg") ||
-                        selectedFile.EndsWith(".png") || selectedFile.EndsWith(".bmp"))
+                    if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        pbPreview.Image = Image.FromFile(selectedFile);
-                    }
+                        string selectedFile = openFileDialog.FileName;
+                        MessageBox.Show($"Selected file: {selectedFile}", "Attachment Added", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // 🔹 Later you can store selectedFile in a variable to save or submit with the issue
+                        if (selectedFile.EndsWith(".jpg") || selectedFile.EndsWith(".jpeg") ||
+                            selectedFile.EndsWith(".png") || selectedFile.EndsWith(".bmp"))
+                        {
+                            try
+                            {
+                                pbPreview.Image = Image.FromFile(selectedFile);
+                                selectedAttachment = selectedFile; // store for submission
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Error loading image: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                        else
+                        {
+                            selectedAttachment = selectedFile; // store non-image file
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error selecting file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private async void btnSubmit_Click(object sender, EventArgs e)
         {
-            string location = txtLocation.Text.Trim();
-            string category = cmbCategory.SelectedItem?.ToString();
-            string description = rtbDescription.Text.Trim();
-
-            if (string.IsNullOrEmpty(location) || string.IsNullOrEmpty(category) || string.IsNullOrEmpty(description))
+            try
             {
-                MessageBox.Show("Please fill in all required fields.", "Missing Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                string location = txtLocation.Text.Trim();
+                string category = cmbCategory.SelectedItem?.ToString();
+                string description = rtbDescription.Text.Trim();
+
+                if (string.IsNullOrEmpty(location) || string.IsNullOrEmpty(category) || string.IsNullOrEmpty(description))
+                {
+                    MessageBox.Show("Please fill in all required fields.", "Missing Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                progressBar.Visible = true;
+                lblProgressStatus.Text = "Submitting...";
+                lblProgressStatus.ForeColor = Color.Gray;
+                lblProgressStatus.Visible = true;
+
+                await Task.Delay(2000); // simulate submission
+
+                ReportIssue report = new ReportIssue
+                {
+                    Location = location,
+                    Category = category,
+                    Description = description,
+                    AttachmentPath = selectedAttachment
+                };
+
+                Reports.Add(report);
+
+                progressBar.Visible = false;
+                lblProgressStatus.Text = "Submitted successfully!";
+                lblProgressStatus.ForeColor = Color.Green;
+
+                txtLocation.Clear();
+                cmbCategory.SelectedIndex = -1;
+                rtbDescription.Clear();
+                selectedAttachment = null;
             }
-
-            // Show progress
-            progressBar.Visible = true;
-            lblProgressStatus.Text = "Submitting...";
-            lblProgressStatus.ForeColor = Color.Gray;
-            lblProgressStatus.Visible = true;
-
-            // Fake "sending" delay
-            await Task.Delay(2000);
-
-            // Create report object
-            ReportIssue report = new ReportIssue
+            catch (Exception ex)
             {
-                Location = location,
-                Category = category,
-                Description = description,
-                AttachmentPath = selectedAttachment
-            };
-
-            Reports.Add(report);
-
-            // Hide progress + show success
-            progressBar.Visible = false;
-            lblProgressStatus.Text = "✅ Submitted successfully!";
-            lblProgressStatus.ForeColor = Color.Green;
-
-            
-
-            // Reset fields
-            txtLocation.Clear();
-            cmbCategory.SelectedIndex = -1;
-            rtbDescription.Clear();
-            selectedAttachment = null;
+                progressBar.Visible = false;
+                lblProgressStatus.Text = "Submission failed!";
+                lblProgressStatus.ForeColor = Color.Red;
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
     }
