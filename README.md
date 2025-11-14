@@ -20,8 +20,7 @@
 
 
 - **Service Request Status**  
-  Track the progress of submitted service requests with visual timelines, department assignments, and feedback loops.
-
+  Citizens can track the progress of their submitted service requests in real time. Each request displays a visual timeline showing key milestones, such as submission, department assignment, in-progress updates, and completion. Users can see      which municipal department is responsible for handling the issue and receive feedback notifications once updates are made. This feature helps improve transparency and accountability, allowing residents to stay informed about infrastructure      repairs, public works, or other civic concerns. Internally, requests are stored in a list of report objects, and the UI dynamically updates timelines and status indicators as new updates are logged.
 ---
 
 ## 🛠️ Tech Stack
